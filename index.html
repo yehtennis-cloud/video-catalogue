@@ -1,1 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Video Catalogue</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Video Catalogue</h1>
+
+<section>
+  <h2>Submit a Video</h2>
+  <input id="title" placeholder="Video title">
+  <input id="url" placeholder="Video URL">
+  <button id="submitBtn">Submit</button>
+  <p id="submitMessage"></p>
+</section>
+
+<hr>
+
+<section>
+  <h2>Search Videos</h2>
+  <div id="tagFilters"></div>
+  <button id="searchBtn">Search</button>
+</section>
+
+<section>
+  <h2>Results</h2>
+  <div id="results"></div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+</body>
+</html>
 
