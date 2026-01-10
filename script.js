@@ -177,3 +177,17 @@ async function updateVideoStatus(videoId, newStatus) {
 
 // Call this when the admin page loads
 window.addEventListener('DOMContentLoaded', loadPendingVideos);
+
+// Get current user
+const { data: { user } } = await supabaseClient.auth.getUser();
+
+// Fetch role from profiles
+const { data: profile } = await supabaseClient
+  .from('profiles')
+  .select('role')
+  .eq('id', user.id)
+  .single();
+
+if (profile.role === 'admin') {
+  document.getElementById('adminVideos').style.display = 'block';
+}
