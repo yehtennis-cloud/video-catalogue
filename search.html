@@ -5,13 +5,28 @@
   <title>Video Search</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
   <script src="search.js" defer></script>
+  <style>
+    #tagFilters label {
+      margin-right: 10px;
+    }
+    .video-card {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    #backBtn {
+      margin-bottom: 20px;
+      padding: 5px 10px;
+      font-size: 16px;
+    }
+  </style>
 </head>
 <body>
+  <button id="backBtn">← Back to Submission</button>
   <h1>Search Videos</h1>
 
   <h2>Filter by Tags:</h2>
   <div id="tagFilters"></div>
-  <button id="searchBtn">Search</button>
 
   <h2>Videos:</h2>
   <div id="videoResults">Loading approved videos...</div>
