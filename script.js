@@ -110,3 +110,39 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
   document.getElementById("description").value = "";
   document.querySelectorAll("#submitTags input:checked").forEach(cb => cb.checked = false);
 });
+async function loadPendingVideos() {
+  const { data: videos, error } = await supabaseClient
+    .from('videos')
+    .select('*')
+    .eq('status', 'pending')
+    .order('created_at', { ascending: true });
+
+  if (error) {
+    console.error('Error fetching pending videos:', error);
+    return;
+  }
+
+  const container = document.getElementById('adminVideos');
+  container.innerHTML = '';
+
+  videos.forEach(video => {
+    const div = document.createElement('div');
+    div.innerHTML = `
+      <h3>${video.title}</h3>
+      <p>${video.description}</p>
+      <a href="${video.url}" target="_blank">${video.url}</a><br>
+      <button data-id="${video.id}" class="approveBtn">Approve</button>
+      <button data-id="${video.id}" class="denyBtn">Deny</button>
+      <hr>
+    `;
+    container.appendChild(div);
+  });
+
+  // Add click handlers
+  document.querySelectorAll('.approveBtn').forEach(btn => {
+    btn.addEventListener('click', () => updateVideoStatus(btn.dataset.id, 'approved'));
+  });
+  document.querySelectorAll('.denyBtn').forEach(btn => {
+    btn.addEventListener('click', () => updateVideoStatus(btn.dataset.id, 'denied'));
+  });
+}
