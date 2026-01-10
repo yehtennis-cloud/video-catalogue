@@ -1,3 +1,4 @@
+console.log("SCRIPT VERSION A — NO TOP LEVEL AWAIT");
 // Make sure supabaseClient is defined at the top
 const SUPABASE_URL = "https://sdicmtmcanvswsisihqb.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_pAMpbQ_ZpucKn9X8xgQUdA_as-rPsa7";
