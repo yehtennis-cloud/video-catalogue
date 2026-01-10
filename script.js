@@ -2,10 +2,7 @@
 const SUPABASE_URL = "https://sdicmtmcanvswsisihqb.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_pAMpbQ_ZpucKn9X8xgQUdA_as-rPsa7";
 
-const supabaseClient = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Load tags for the submission form
 async function loadSubmitTags() {
@@ -50,9 +47,10 @@ window.addEventListener("DOMContentLoaded", loadSubmitTags);
 document.getElementById("submitBtn").addEventListener("click", async () => {
   const title = document.getElementById("title").value.trim();
   const url = document.getElementById("url").value.trim();
+  const descriptionInput = document.getElementById("description").value.trim();
 
-  // Use default description to satisfy constraint
-  const description = "Submitted via website";  
+  // Safe default if user leaves description blank
+  const description = descriptionInput.length > 0 ? descriptionInput : "Submitted via website";
 
   const selectedTags = [...document.querySelectorAll("#submitTags input:checked")]
     .map(cb => cb.value);
@@ -65,7 +63,7 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
 
   console.log("Submitting video:", { title, url, description, selectedTags });
 
-  // 1. Insert video with default description
+  // 1. Insert video
   const { data: video, error: videoError } = await supabaseClient
     .from("videos")
     .insert([{ title, url, description }])
@@ -74,8 +72,7 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
 
   if (videoError) {
     console.error("Video insert error:", videoError);
-    document.getElementById("submitMessage").textContent =
-      videoError.message;
+    document.getElementById("submitMessage").textContent = videoError.message;
     return;
   }
 
@@ -93,18 +90,17 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
 
   if (tagError) {
     console.error("Video tags insert error:", tagError);
-    document.getElementById("submitMessage").textContent =
-      tagError.message;
+    document.getElementById("submitMessage").textContent = tagError.message;
     return;
   }
 
   console.log("Video tags inserted successfully");
 
-  document.getElementById("submitMessage").textContent =
-    "Video submitted for review!";
+  document.getElementById("submitMessage").textContent = "Video submitted for review!";
 
   // Clear form
   document.getElementById("title").value = "";
   document.getElementById("url").value = "";
+  document.getElementById("description").value = "";
   document.querySelectorAll("#submitTags input:checked").forEach(cb => cb.checked = false);
 });
