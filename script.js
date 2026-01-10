@@ -110,6 +110,7 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
   document.getElementById("description").value = "";
   document.querySelectorAll("#submitTags input:checked").forEach(cb => cb.checked = false);
 });
+// Load all pending videos
 async function loadPendingVideos() {
   const { data: videos, error } = await supabaseClient
     .from('videos')
@@ -117,28 +118,38 @@ async function loadPendingVideos() {
     .eq('status', 'pending')
     .order('created_at', { ascending: true });
 
+  const container = document.getElementById('adminVideos');
+  if (!container) return;
+
   if (error) {
     console.error('Error fetching pending videos:', error);
+    container.innerHTML = '<p>Failed to load pending videos.</p>';
     return;
   }
 
-  const container = document.getElementById('adminVideos');
+  if (!videos || videos.length === 0) {
+    container.innerHTML = '<p>No pending videos.</p>';
+    return;
+  }
+
   container.innerHTML = '';
 
   videos.forEach(video => {
     const div = document.createElement('div');
+    div.style.border = '1px solid #ccc';
+    div.style.padding = '10px';
+    div.style.marginBottom = '10px';
     div.innerHTML = `
       <h3>${video.title}</h3>
       <p>${video.description}</p>
-      <a href="${video.url}" target="_blank">${video.url}</a><br>
+      <a href="${video.url}" target="_blank">${video.url}</a><br><br>
       <button data-id="${video.id}" class="approveBtn">Approve</button>
       <button data-id="${video.id}" class="denyBtn">Deny</button>
-      <hr>
     `;
     container.appendChild(div);
   });
 
-  // Add click handlers
+  // Attach click handlers
   document.querySelectorAll('.approveBtn').forEach(btn => {
     btn.addEventListener('click', () => updateVideoStatus(btn.dataset.id, 'approved'));
   });
@@ -146,3 +157,23 @@ async function loadPendingVideos() {
     btn.addEventListener('click', () => updateVideoStatus(btn.dataset.id, 'denied'));
   });
 }
+
+// Update video status in Supabase
+async function updateVideoStatus(videoId, newStatus) {
+  const { data, error } = await supabaseClient
+    .from('videos')
+    .update({ status: newStatus })
+    .eq('id', videoId);
+
+  if (error) {
+    console.error('Error updating video status:', error);
+    alert('Failed to update status: ' + error.message);
+    return;
+  }
+
+  console.log('Video updated:', data);
+  loadPendingVideos(); // Refresh list after update
+}
+
+// Call this when the admin page loads
+window.addEventListener('DOMContentLoaded', loadPendingVideos);
