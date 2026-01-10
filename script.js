@@ -12,13 +12,51 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
   const title = document.getElementById("title").value;
   const url = document.getElementById("url").value;
 
-  const { error } = await supabaseClient
+  const selectedTags = [...document.querySelectorAll("#submitTags input:checked")]
+    .map(cb => cb.value);
+
+  if (!title || !url || selectedTags.length === 0) {
+    document.getElementById("submitMessage").textContent =
+      "Title, URL, and at least one tag are required.";
+    return;
+  }
+
+  // 1. Insert video
+  const { data: video, error: videoError } = await supabaseClient
     .from("videos")
-    .insert([{ title, url }]);
+    .insert([{ title, url }])
+    .select()
+    .single();
+
+  if (videoError) {
+    document.getElementById("submitMessage").textContent =
+      videoError.message;
+    return;
+  }
+
+  // 2. Insert video_tags
+  const videoTags = selectedTags.map(tagId => ({
+    video_id: video.id,
+    tag_id: tagId
+  }));
+
+  const { error: tagError } = await supabaseClient
+    .from("video_tags")
+    .insert(videoTags);
+
+  if (tagError) {
+    document.getElementById("submitMessage").textContent =
+      tagError.message;
+    return;
+  }
 
   document.getElementById("submitMessage").textContent =
-    error ? error.message : "Submitted for review.";
+    "Submitted for review.";
+
+  document.getElementById("title").value = "";
+  document.getElementById("url").value = "";
 });
+
 
 // 3. Load tags for filtering
 async function loadTags() {
