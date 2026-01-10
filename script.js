@@ -151,4 +151,5 @@ async function loadSubmitTags() {
 }
 
 loadSubmitTags();
+window.addEventListener("DOMContentLoaded", loadSubmitTags);
 
