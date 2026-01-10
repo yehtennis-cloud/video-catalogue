@@ -208,3 +208,33 @@ async function checkAdminAccess() {
 }
 
 window.addEventListener('DOMContentLoaded', checkAdminAccess);
+document.getElementById('loginBtn')?.addEventListener('click', async () => {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  const { error } = await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    document.getElementById('authMessage').textContent = error.message;
+    return;
+  }
+
+  document.getElementById('authMessage').textContent = 'Logged in';
+  checkAdminAccess();
+  if (profile.role === 'admin') {
+  document.getElementById('adminVideos').style.display = 'block';
+  document.getElementById('loginBtn').style.display = 'none';
+  document.getElementById('logoutBtn').style.display = 'inline';
+}
+
+  loadPendingVideos();
+});
+
+document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+  await supabaseClient.auth.signOut();
+  document.getElementById('authMessage').textContent = 'Logged out';
+  document.getElementById('adminVideos').style.display = 'none';
+});
