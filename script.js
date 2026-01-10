@@ -178,16 +178,32 @@ async function updateVideoStatus(videoId, newStatus) {
 // Call this when the admin page loads
 window.addEventListener('DOMContentLoaded', loadPendingVideos);
 
-// Get current user
-const { data: { user } } = await supabaseClient.auth.getUser();
+async function checkAdminAccess() {
+  const { data: { user }, error: userError } =
+    await supabaseClient.auth.getUser();
 
-// Fetch role from profiles
-const { data: profile } = await supabaseClient
-  .from('profiles')
-  .select('role')
-  .eq('id', user.id)
-  .single();
+  if (userError || !user) {
+    console.log('No logged-in user');
+    return;
+  }
 
-if (profile.role === 'admin') {
-  document.getElementById('adminVideos').style.display = 'block';
+  const { data: profile, error: profileError } = await supabaseClient
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+
+  if (profileError) {
+    console.error('Error fetching profile:', profileError);
+    return;
+  }
+
+  if (profile.role === 'admin') {
+    const adminContainer = document.getElementById('adminVideos');
+    if (adminContainer) {
+      adminContainer.style.display = 'block';
+    }
+  }
 }
+
+window.addEventListener('DOMContentLoaded', checkAdminAccess);
