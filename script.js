@@ -77,4 +77,29 @@ document.getElementById("searchBtn").addEventListener("click", async () => {
 
 // Load tags on page load
 loadTags();
+async function loadSubmitTags() {
+  const { data: tags, error } = await supabaseClient
+    .from("tags")
+    .select("*")
+    .order("name");
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  const container = document.getElementById("submitTags");
+  container.innerHTML = "";
+
+  tags.forEach(tag => {
+    const label = document.createElement("label");
+    label.innerHTML = `
+      <input type="checkbox" value="${tag.id}">
+      ${tag.name}
+    `;
+    container.appendChild(label);
+    container.appendChild(document.createElement("br"));
+  });
+}
+loadSubmitTags();
 
