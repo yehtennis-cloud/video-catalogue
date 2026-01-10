@@ -64,11 +64,17 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
   console.log("Submitting video:", { title, url, description, selectedTags });
 
   // 1. Insert video
-  const { data: video, error: videoError } = await supabaseClient
-    .from("videos")
-    .insert([{ title, url, description, status: 'pending' }])
-    .select()
-    .single();
+ const { data: video, error: videoError } = await supabaseClient
+  .from("videos")
+  .insert([{
+    title,
+    url,
+    description,
+    status: 'pending'   // explicitly include this to satisfy RLS
+  }])
+  .select()
+  .single();
+
 
   if (videoError) {
     console.error("Video insert error:", videoError);
