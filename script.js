@@ -116,17 +116,26 @@ document.getElementById("searchBtn").addEventListener("click", async () => {
 // Load tags on page load
 loadTags();
 async function loadSubmitTags() {
+  console.log("loadSubmitTags() called");
+
   const { data: tags, error } = await supabaseClient
     .from("tags")
     .select("*")
     .order("name");
 
   if (error) {
-    console.error(error);
+    console.error("Error fetching tags:", error);
     return;
   }
 
+  console.log("Tags fetched:", tags);
+
   const container = document.getElementById("submitTags");
+  if (!container) {
+    console.error("#submitTags element not found");
+    return;
+  }
+
   container.innerHTML = "";
 
   tags.forEach(tag => {
@@ -138,6 +147,8 @@ async function loadSubmitTags() {
     container.appendChild(label);
     container.appendChild(document.createElement("br"));
   });
+  console.log("Tags rendered successfully");
 }
+
 loadSubmitTags();
 
