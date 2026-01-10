@@ -12,7 +12,7 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
   const title = document.getElementById("title").value;
   const url = document.getElementById("url").value;
 
-  const { error } = await supabase
+  const { error } = await supabaseClient
     .from("videos")
     .insert([{ title, url }]);
 
@@ -22,7 +22,7 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
 
 // 3. Load tags for filtering
 async function loadTags() {
-  const { data: tags } = await supabase
+  const { data: tags } = await supabaseClient
     .from("tags")
     .select("*")
     .order("name");
@@ -52,7 +52,7 @@ document.getElementById("searchBtn").addEventListener("click", async () => {
     return;
   }
 
-  const { data, error } = await supabase.rpc(
+  const { data, error } = await supabaseClient.rpc(
     "videos_with_all_tags",
     { tag_ids: checked }
   );
