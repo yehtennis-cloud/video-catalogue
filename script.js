@@ -66,7 +66,7 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
   // 1. Insert video
   const { data: video, error: videoError } = await supabaseClient
     .from("videos")
-    .insert([{ title, url, description }])
+    .insert([{ title, url, description, status: 'pending' }])
     .select()
     .single();
 
