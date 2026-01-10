@@ -22,11 +22,16 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
   }
 
   // 1. Insert video
-  const { data: video, error: videoError } = await supabaseClient
-    .from("videos")
-    .insert([{ title, url }])
-    .select()
-    .single();
+const { data: video, error: videoError } = await supabaseClient
+  .from("videos")
+  .insert([{
+    title,
+    url,
+    description: ""   // Provide empty string if description is optional
+  }])
+  .select()
+  .single();
+
 
   if (videoError) {
     document.getElementById("submitMessage").textContent =
