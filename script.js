@@ -1,9 +1,15 @@
-console.log("SCRIPT VERSION A — NO TOP LEVEL AWAIT");
-// Make sure supabaseClient is defined at the top
+console.log("script.js loaded");
+
 const SUPABASE_URL = "https://sdicmtmcanvswsisihqb.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_pAMpbQ_ZpucKn9X8xgQUdA_as-rPsa7";
 
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+console.log("SCRIPT VERSION A — NO TOP LEVEL AWAIT");
+
 
 // Load tags for the submission form
 async function loadSubmitTags() {
@@ -326,7 +332,7 @@ async function renderAuthStatus() {
 }
 window.addEventListener('DOMContentLoaded', renderAuthStatus);
 
-document.addEventListener('DOMContentLoaded', () => {
+async functionEventListener('DOMContentLoaded', () => {
   console.log('script.js loaded');
 
   const loginBtn = document.getElementById('loginBtn');
@@ -354,18 +360,30 @@ async function loginAdmin() {
     return;
   }
 
-  const { data, error } = await supabaseClient.auth.signInWithPassword({
+  const { error } = await supabaseClient.auth.signInWithPassword({
     email,
     password
   });
 
   if (error) {
-    console.error(error);
     message.textContent = error.message;
     return;
   }
 
-  console.log('Login successful');
+  const { data: { user } } = await supabaseClient.auth.getUser();
 
+  const { data: profile, error: profileError } = await supabaseClient
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+
+  if (profileError || profile.role !== 'admin') {
+    message.textContent = 'Not authorized as admin';
+    await supabaseClient.auth.signOut();
+    return;
+  }
+
+  console.log('Admin login successful');
   window.location.href = 'search.html';
 }
