@@ -46,11 +46,29 @@ async function loadSubmitTags() {
 }
 
 async function submitVideo() {
-  const title = document.getElementById('title').value.trim();
-  const url = document.getElementById('url').value.trim();
-  const description = 
-    document.getElementById('description').value.trim() || 
-    'Submitted via website';
+  // ... get title, url, description, tags (array of uuid strings)
+
+  if (!title || !url || tags.length === 0) {
+    // validation...
+  }
+
+  const { data, error } = await supabaseClient
+    .rpc('submit_video_with_tags', {
+      p_title: title,
+      p_url: url,
+      p_description: description,
+      p_tags: tags  // pass as array e.g. ['uuid1', 'uuid2']
+    });
+
+  if (error) {
+    console.error(error);
+    document.getElementById('submitMessage').textContent = 'Error: ' + error.message;
+    return;
+  }
+
+  document.getElementById('submitMessage').textContent = 'Video submitted for review! ✓';
+  // reset form...
+}
 
   const tags = Array.from(selectedTagIds); // Get all currently selected tag IDs
 
