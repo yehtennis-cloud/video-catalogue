@@ -40,17 +40,11 @@ async function loadTags() {
   });
 }
 
-// Load all approved videos (with optional filtering)
+// Load all approved videos (ignore tags for now)
 async function loadVideos() {
   const { data: videos, error } = await supabaseClient
     .from('videos')
-    .select(`
-      id,
-      title,
-      url,
-      description,
-      video_tags(tag_id)
-    `)
+    .select('id, title, url, description, status, created_at')
     .eq('status', 'approved')
     .order('created_at', { ascending: true });
 
@@ -60,32 +54,21 @@ async function loadVideos() {
     return [];
   }
 
+  console.log("Approved videos loaded:", videos); // <-- debug
+  return videos;
+}
+
+// Simple filter function for now (ignores tags)
+async function filterVideos() {
+  const videos = await loadVideos();
+  displayVideos(videos);
+}
+
   // Ensure video_tags is always an array
   return videos.map(video => ({
     ...video,
     video_tags: video.video_tags || []
   }));
-}
-
-// Filter videos client-side based on selected tags
-async function filterVideos() {
-  const allVideos = await loadVideos();
-
-  console.log("Videos loaded from Supabase:", allVideos); // <-- DEBUG
-
-  const selectedTagIds = [...document.querySelectorAll('#tagFilters input:checked')]
-    .map(cb => cb.value);
-
-  const filtered = selectedTagIds.length === 0
-    ? allVideos
-    : allVideos.filter(video => {
-        const videoTagIds = (video.video_tags || []).map(vt => vt.tag_id);
-        return selectedTagIds.every(id => videoTagIds.includes(id));
-      });
-
-  console.log("Videos after filtering:", filtered); // <-- DEBUG
-
-  displayVideos(filtered);
 }
 
 // Display a list of videos
