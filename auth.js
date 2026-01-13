@@ -82,3 +82,12 @@ async function renderAuthStatus() {
     });
   }
 }
+document.addEventListener('DOMContentLoaded', () => {
+  const backBtn = document.getElementById('backToSubmission');
+
+  if (backBtn) {
+    backBtn.addEventListener('click', () => {
+      window.location.href = 'submission.html';
+    });
+  }
+});
