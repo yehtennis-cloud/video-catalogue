@@ -5,9 +5,11 @@ const SUPABASE_ANON_KEY = "sb_publishable_pAMpbQ_ZpucKn9X8xgQUdA_as-rPsa7";
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Navigate back to submission page
-document.getElementById('backBtn').addEventListener('click', () => {
-  window.location.href = 'submission.html'; // Replace with your submission page filename
+// Navigate back to submission page
+document.getElementById('backToSubmission').addEventListener('click', () => {
+  window.location.href = 'submission.html';
 });
+
 
 // Load all tags and display as checkboxes
 async function loadTags() {
