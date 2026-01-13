@@ -71,6 +71,8 @@ async function loadVideos() {
 async function filterVideos() {
   const allVideos = await loadVideos();
 
+  console.log("Videos loaded from Supabase:", allVideos); // <-- DEBUG
+
   const selectedTagIds = [...document.querySelectorAll('#tagFilters input:checked')]
     .map(cb => cb.value);
 
@@ -80,6 +82,8 @@ async function filterVideos() {
         const videoTagIds = (video.video_tags || []).map(vt => vt.tag_id);
         return selectedTagIds.every(id => videoTagIds.includes(id));
       });
+
+  console.log("Videos after filtering:", filtered); // <-- DEBUG
 
   displayVideos(filtered);
 }
