@@ -1,72 +1,115 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <div id="authStatus" style="
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
-  margin-bottom: 15px;
-  font-weight: bold;
-">
-  Checking login status...
-</div>
-<meta charset="UTF-8">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Video Catalogue</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Grid layout for tags - you can move this to style.css */
+    .tags-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+      margin: 15px 0;
+      padding: 10px;
+      max-width: 100%;
+    }
+
+    .tag-item {
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 10px 12px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s;
+      text-align: center;
+      font-size: 0.95em;
+    }
+
+    .tag-item:hover {
+      background-color: #e0e0e0;
+    }
+
+    .tag-item.selected {
+      background-color: #4a90e2;
+      color: white;
+      border-color: #357abd;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .tags-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      }
+    }
+
+    @media (max-width: 480px) {
+      .tags-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<h1>Video Catalogue</h1>
+  <div id="authStatus" style="padding: 10px; border-bottom: 1px solid #ccc; margin-bottom: 15px; font-weight: bold;">
+    Checking login status...
+  </div>
 
-<section>
-  <h2>Submit a Video</h2>
+  <div id="authBox" style="margin-bottom: 20px; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+    <input type="email" id="email" placeholder="Admin email">
+    <input type="password" id="password" placeholder="Password">
+    <button id="loginBtn">Login</button>
+    <button id="logoutBtn" style="display:none;">Logout</button>
+    <p id="authMessage"></p>
+  </div>
 
-  <input id="title" placeholder="Video title">
-  <input id="url" placeholder="Video URL">
-<label for="description">Description:</label><br>
-<textarea id="description" rows="3" cols="40" placeholder="Add a description of the video"></textarea><br>
+  <h1>Video Catalogue</h1>
 
-  <h3>Select Tags</h3>
-  <div id="submitTags"></div>
+  <section>
+    <h2>Submit a Video</h2>
+    <input id="title" placeholder="Video title"><br><br>
+    <input id="url" placeholder="Video URL"><br><br>
+    
+    <label for="description">Description:</label><br>
+    <textarea id="description" rows="4" cols="50" placeholder="Add a description of the video"></textarea><br><br>
 
-  <button id="submitBtn">Submit</button>
-  <p id="submitMessage"></p>
-</section>
+    <h3>Select Tags</h3>
+    <div id="submitTags" class="tags-grid"></div>
 
+    <button id="submitBtn">Submit</button>
+    <p id="submitMessage"></p>
+  </section>
 
-<hr>
+  <hr>
 
-<section>
-  <h2>Search Videos</h2>
-  <div id="tagFilters"></div>
-<a href="search.html">
-  <button>Search Catalogue</button>
-</a>
+  <section>
+    <h2>Search Videos</h2>
+    <div id="tagFilters" class="tags-grid"></div>
+    <a href="search.html">
+      <button>Search Catalogue</button>
+    </a>
+  </section>
 
-</section>
+  <section>
+    <h2>Results</h2>
+    <div id="results"></div>
+  </section>
 
-<section>
-  <h2>Results</h2>
-  <div id="results"></div>
-</section>
+  <hr>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase.js"></script>
-<script src="auth.js"></script>
-<script src="submission.js"></script>
+  <h2>Admin Video Approvals</h2>
+  <div id="adminVideos">
+    Loading pending videos...
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase.js"></script>
+  <script src="auth.js"></script>
+  <script src="submission.js"></script>
 
 </body>
 </html>
-<div id="authBox" style="margin-bottom:20px;">
-  <input type="email" id="email" placeholder="Admin email">
-  <input type="password" id="password" placeholder="Password">
-  <button id="loginBtn">Login</button>
-  <button id="logoutBtn" style="display:none;">Logout</button>
-  <p id="authMessage"></p>
-</div>
-
-<h2>Admin Video Approvals</h2>
-<div id="adminVideos">
-  Loading pending videos...
-</div>
-
-
