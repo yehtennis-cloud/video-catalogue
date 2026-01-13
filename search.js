@@ -6,7 +6,7 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Navigate back to submission page
 document.getElementById('backBtn').addEventListener('click', () => {
-  window.location.href = 'index.html'; // Replace with your submission page filename
+  window.location.href = 'submission.html'; // Replace with your submission page filename
 });
 
 // Load all tags and display as checkboxes
