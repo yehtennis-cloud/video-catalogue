@@ -60,3 +60,8 @@ async function submitVideo() {
     'Video submitted for review';
 }
 
+// submission.js
+document.addEventListener('DOMContentLoaded', async () => {
+  // Do NOT redirect if no user
+  loadSubmitTags();
+});
