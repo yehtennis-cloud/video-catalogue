@@ -326,3 +326,46 @@ async function renderAuthStatus() {
 }
 window.addEventListener('DOMContentLoaded', renderAuthStatus);
 
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('script.js loaded');
+
+  const loginBtn = document.getElementById('loginBtn');
+  const guestBtn = document.getElementById('guestBtn');
+
+  if (loginBtn) {
+    loginBtn.addEventListener('click', loginAdmin);
+  }
+
+  if (guestBtn) {
+    guestBtn.addEventListener('click', () => {
+      window.location.href = 'search.html';
+    });
+  }
+});
+async function loginAdmin() {
+  console.log('Login button clicked');
+
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value.trim();
+  const message = document.getElementById('loginMessage');
+
+  if (!email || !password) {
+    message.textContent = 'Please enter email and password.';
+    return;
+  }
+
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    console.error(error);
+    message.textContent = error.message;
+    return;
+  }
+
+  console.log('Login successful');
+
+  window.location.href = 'search.html';
+}
