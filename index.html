@@ -1,60 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
   <title>Video Catalogue</title>
-  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-<h1>Video Catalogue</h1>
-
-<section>
-  <h2>Submit a Video</h2>
-
-  <input id="title" placeholder="Video title">
-  <input id="url" placeholder="Video URL">
-<label for="description">Description:</label><br>
-<textarea id="description" rows="3" cols="40" placeholder="Add a description of the video"></textarea><br>
-
-  <h3>Select Tags</h3>
-  <div id="submitTags"></div>
-
-  <button id="submitBtn">Submit</button>
-  <p id="submitMessage"></p>
-</section>
-
-
-<hr>
-
-<section>
-  <h2>Search Videos</h2>
-  <div id="tagFilters"></div>
-<a href="search.html">
-  <button>Search Catalogue</button>
-</a>
-
-</section>
-
-<section>
-  <h2>Results</h2>
-  <div id="results"></div>
-</section>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="script.js"></script>
-</body>
-</html>
-<div id="authBox" style="margin-bottom:20px;">
+  <h2>Admin Login</h2>
   <input type="email" id="email" placeholder="Admin email">
   <input type="password" id="password" placeholder="Password">
   <button id="loginBtn">Login</button>
-  <button id="logoutBtn" style="display:none;">Logout</button>
-  <p id="authMessage"></p>
-</div>
 
-<h2>Admin Video Approvals</h2>
-<div id="adminVideos">
-  Loading pending videos...
-</div>
+  <p id="loginMessage"></p>
 
+  <hr>
+
+  <button id="guestBtn">Continue as Guest</button>
+
+  <script src="script.js"></script>
+</body>
+</html>
