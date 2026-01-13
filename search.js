@@ -45,7 +45,10 @@ async function loadVideos() {
   const { data: videos, error } = await supabaseClient
     .from('videos')
     .select(`
-      id, title, url, description,
+      id,
+      title,
+      url,
+      description,
       video_tags(tag_id)
     `)
     .eq('status', 'approved')
@@ -57,7 +60,11 @@ async function loadVideos() {
     return [];
   }
 
-  return videos;
+  // Ensure video_tags is always an array
+  return videos.map(video => ({
+    ...video,
+    video_tags: video.video_tags || []
+  }));
 }
 
 // Filter videos client-side based on selected tags
@@ -70,7 +77,7 @@ async function filterVideos() {
   const filtered = selectedTagIds.length === 0
     ? allVideos
     : allVideos.filter(video => {
-        const videoTagIds = video.video_tags.map(vt => vt.tag_id);
+        const videoTagIds = (video.video_tags || []).map(vt => vt.tag_id);
         return selectedTagIds.every(id => videoTagIds.includes(id));
       });
 
