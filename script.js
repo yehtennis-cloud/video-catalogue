@@ -285,3 +285,44 @@ document.getElementById('loginBtn')?.addEventListener('click', async () => {
 document.getElementById('guestBtn')?.addEventListener('click', () => {
   window.location.href = 'submission.html';
 });
+async function renderAuthStatus() {
+  const statusDiv = document.getElementById('authStatus');
+  if (!statusDiv) return;
+
+  const { data: { user } } = await supabaseClient.auth.getUser();
+
+  // Guest
+  if (!user) {
+    statusDiv.innerHTML = `
+      Browsing as <span style="color:#555">Guest</span>
+    `;
+    return;
+  }
+
+  // Fetch role
+  const { data: profile, error } = await supabaseClient
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+
+  if (error || !profile) {
+    statusDiv.textContent = 'Authentication error';
+    return;
+  }
+
+  // Admin
+  if (profile.role === 'admin') {
+    statusDiv.innerHTML = `
+      Logged in as <span style="color:green">Admin</span>
+      <button id="logoutBtn" style="margin-left:10px;">Logout</button>
+    `;
+
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await supabaseClient.auth.signOut();
+      window.location.href = 'index.html';
+    });
+  }
+}
+window.addEventListener('DOMContentLoaded', renderAuthStatus);
+
