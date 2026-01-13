@@ -52,7 +52,7 @@ async function submitVideo() {
     document.getElementById('description').value.trim() || 
     'Submitted via website';
 
-  const tags = Array.from(selectedTagIds); // array of strings (UUIDs)
+  const tags = Array.from(selectedTagIds); // your array of tag UUID strings
 
   if (!title || !url || tags.length === 0) {
     document.getElementById('submitMessage').textContent = 
@@ -61,36 +61,34 @@ async function submitVideo() {
   }
 
   try {
-    const { data, error } = await supabaseClient.rpc('submit_video_with_tags', {
-      p_title: title,
-      p_url: url,
-      p_description: description,
-      p_tags: tags  // supabase-js handles string[] → uuid[]
-    });
+    const { data, error } = await supabaseClient
+      .rpc('submit_video_with_tags', {
+        p_title: title,
+        p_url: url,
+        p_description: description,
+        p_tags: tags  // automatically passed as UUID array
+      });
 
-    if (error) {
-      console.error('RPC error:', error);
-      throw error;
-    }
+    if (error) throw error;
 
-    console.log('Success! Video ID:', data);
+    console.log('Video submitted successfully, ID:', data);
 
     document.getElementById('submitMessage').textContent = 
       'Video submitted for review! ✓';
 
-    // Reset everything
+    // Reset form
     document.getElementById('title').value = '';
     document.getElementById('url').value = '';
     document.getElementById('description').value = '';
     selectedTagIds.clear();
-    document.querySelectorAll('#submitTags .tag-item').forEach(el => {
-      el.classList.remove('selected');
-    });
+    
+    document.querySelectorAll('#submitTags .tag-item.selected')
+      .forEach(el => el.classList.remove('selected'));
 
   } catch (err) {
     console.error('Submission failed:', err);
     document.getElementById('submitMessage').textContent = 
-      'Error: ' + (err.message || 'Failed to submit. Check console.');
+      'Error submitting video. Please try again.';
   }
 }
     // Insert the video
