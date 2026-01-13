@@ -238,3 +238,50 @@ document.getElementById('logoutBtn')?.addEventListener('click', async () => {
   document.getElementById('authMessage').textContent = 'Logged out';
   document.getElementById('adminVideos').style.display = 'none';
 });
+const SUPABASE_URL = "https://sdicmtmcanvswsisihqb.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_pAMpbQ_ZpucKn9X8xgQUdA_as-rPsa7";
+
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+// Admin login
+document.getElementById('loginBtn')?.addEventListener('click', async () => {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  const { error } = await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    document.getElementById('loginMessage').textContent = error.message;
+    return;
+  }
+
+  // Verify admin role
+  const { data: { user } } = await supabaseClient.auth.getUser();
+
+  const { data: profile } = await supabaseClient
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+
+  if (profile?.role !== 'admin') {
+    document.getElementById('loginMessage').textContent =
+      'Not authorized as admin';
+    await supabaseClient.auth.signOut();
+    return;
+  }
+
+  // Admin confirmed
+  window.location.href = 'submission.html';
+});
+
+// Guest access
+document.getElementById('guestBtn')?.addEventListener('click', () => {
+  window.location.href = 'submission.html';
+});
