@@ -46,31 +46,13 @@ async function loadSubmitTags() {
 }
 
 async function submitVideo() {
-  // ... get title, url, description, tags (array of uuid strings)
+  const title = document.getElementById('title').value.trim();
+  const url = document.getElementById('url').value.trim();
+  const description = 
+    document.getElementById('description').value.trim() || 
+    'Submitted via website';
 
-  if (!title || !url || tags.length === 0) {
-    // validation...
-  }
-
-  const { data, error } = await supabaseClient
-    .rpc('submit_video_with_tags', {
-      p_title: title,
-      p_url: url,
-      p_description: description,
-      p_tags: tags  // pass as array e.g. ['uuid1', 'uuid2']
-    });
-
-  if (error) {
-    console.error(error);
-    document.getElementById('submitMessage').textContent = 'Error: ' + error.message;
-    return;
-  }
-
-  document.getElementById('submitMessage').textContent = 'Video submitted for review! ✓';
-  // reset form...
-}
-
-  const tags = Array.from(selectedTagIds); // Get all currently selected tag IDs
+  const tags = Array.from(selectedTagIds); // your array of tag UUID strings
 
   if (!title || !url || tags.length === 0) {
     document.getElementById('submitMessage').textContent = 
@@ -79,6 +61,36 @@ async function submitVideo() {
   }
 
   try {
+    const { data, error } = await supabaseClient
+      .rpc('submit_video_with_tags', {
+        p_title: title,
+        p_url: url,
+        p_description: description,
+        p_tags: tags  // automatically passed as UUID array
+      });
+
+    if (error) throw error;
+
+    console.log('Video submitted successfully, ID:', data);
+
+    document.getElementById('submitMessage').textContent = 
+      'Video submitted for review! ✓';
+
+    // Reset form
+    document.getElementById('title').value = '';
+    document.getElementById('url').value = '';
+    document.getElementById('description').value = '';
+    selectedTagIds.clear();
+    
+    document.querySelectorAll('#submitTags .tag-item.selected')
+      .forEach(el => el.classList.remove('selected'));
+
+  } catch (err) {
+    console.error('Submission failed:', err);
+    document.getElementById('submitMessage').textContent = 
+      'Error submitting video. Please try again.';
+  }
+}
     // Insert the video
     const { data: video, error: videoError } = await supabaseClient
       .from('videos')
