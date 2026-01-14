@@ -2,64 +2,106 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Video Search</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase.js"></script>
   <script src="auth.js"></script>
   <script src="admin.js"></script>
+  <link rel="stylesheet" href="style.css"> <!-- if you have global styles -->
 
   <style>
-    #authStatus {
-      padding: 10px;
-      border-bottom: 1px solid #ccc;
-      margin-bottom: 15px;
-      font-weight: bold;
+    .search-container {
+      margin: 20px 0;
+      max-width: 600px;
     }
-
-    #tagFilters label {
-      margin-right: 10px;
-    }
-
-    .video-card {
-      border: 1px solid #ccc;
-      padding: 10px;
-      margin-bottom: 10px;
-    }
-
-    #backToSubmission {
-      margin-bottom: 20px;
-      padding: 5px 10px;
+    #searchInput {
+      width: 100%;
+      padding: 12px;
       font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .filter-options {
+      margin: 20px 0;
+    }
+    .tags-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+      margin: 15px 0;
+      padding: 10px;
+    }
+    .tag-item {
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 10px 12px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .tag-item:hover {
+      background-color: #e0e0e0;
+    }
+    .tag-item.selected {
+      background-color: #4a90e2;
+      color: white;
+      border-color: #357abd;
+    }
+    .video-card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+      background: #fafafa;
+    }
+    .video-card h3 {
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+    .video-tags {
+      margin-top: 8px;
+      font-size: 0.9em;
+      color: #555;
+    }
+    .tag-pill {
+      display: inline-block;
+      background: #e0e0e0;
+      padding: 4px 10px;
+      border-radius: 12px;
+      margin-right: 6px;
+      margin-bottom: 6px;
     }
   </style>
 </head>
 <body>
 
-  <!-- Auth status display -->
   <div id="authStatus">Checking login status...</div>
 
-  <!-- Back button -->
-  <button type="button" id="backToSubmission">Back to Submission</button>
+  <button type="button" id="backToSubmission">← Back to Submission</button>
 
   <h1>Search Videos</h1>
 
-  <h2>Filter by Tags:</h2>
-  <div id="tagFilters"></div>
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search by video title..." autocomplete="off">
+  </div>
 
-  <h2>Videos:</h2>
+  <div class="filter-options">
+    <label>
+      <input type="radio" name="searchMode" value="title" checked> Search by Title
+    </label>
+    <label>
+      <input type="radio" name="searchMode" value="tags"> Search by Tags
+    </label>
+  </div>
+
+  <div id="tagsContainer" class="tags-grid" style="display: none;"></div>
+
+  <h2>Results</h2>
   <div id="videoResults">Loading approved videos...</div>
 
-  <script>
-    // Back button functionality
-    document.addEventListener('DOMContentLoaded', () => {
-      const backBtn = document.getElementById('backToSubmission');
-      if (backBtn) {
-        backBtn.addEventListener('click', () => {
-          window.location.href = 'submission.html';
-        });
-      }
-    });
-  </script>
-
+  <script src="search.js"></script>
 </body>
 </html>
