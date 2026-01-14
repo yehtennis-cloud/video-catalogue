@@ -1,30 +1,33 @@
 // search.js
-
 let selectedTagIds = new Set();
 let allTags = [];
 let currentMode = 'title'; // or 'tags'
 
-// DOM elements
-const searchInput = document.getElementById('searchInput');
-const tagsContainer = document.getElementById('tagsContainer');
+// ─── DOM elements ────────────────────────────────────────────────
+const searchInput    = document.getElementById('searchInput');
+const tagsContainer  = document.getElementById('tagsContainer');
+const videoResults   = document.getElementById('videoResults');     // add this too (you use it later)
+const modeRadios     = document.querySelectorAll('input[name="searchMode"]');
 
-// Back button
+// ─── Back button ─────────────────────────────────────────────────
 document.getElementById('backToSubmission')?.addEventListener('click', () => {
   window.location.href = 'submission.html';
 });
 
-// Switch between search modes
+// ─── Switch between search modes ─────────────────────────────────
 modeRadios.forEach(radio => {
   radio.addEventListener('change', (e) => {
     currentMode = e.target.value;
     tagsContainer.style.display = currentMode === 'tags' ? 'grid' : 'none';
     if (currentMode === 'tags') {
-      searchInput.value = ''; // optional: clear title search when switching
+      searchInput.value = ''; // optional: clear title search
     }
     filterVideos();
   });
 });
 
+// The rest of your code remains unchanged...
+// (loadTags, renderTagGrid, filterVideos, displayVideos, event listeners, init, etc.)
 // Load tags once + create nice clickable grid
 async function loadTags() {
   const { data, error } = await supabase
