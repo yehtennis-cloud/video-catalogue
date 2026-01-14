@@ -1,5 +1,4 @@
 // search.js
-const supabase = supabaseClient; // from supabase.js
 
 let selectedTagIds = new Set();
 let allTags = [];
@@ -8,8 +7,6 @@ let currentMode = 'title'; // or 'tags'
 // DOM elements
 const searchInput = document.getElementById('searchInput');
 const tagsContainer = document.getElementById('tagsContainer');
-const videoResults = document.getElementById('videoResults');
-const modeRadios = document.querySelectorAll('input[name="searchMode"]');
 
 // Back button
 document.getElementById('backToSubmission')?.addEventListener('click', () => {
