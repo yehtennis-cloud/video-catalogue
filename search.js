@@ -12,7 +12,7 @@ let videoResults;
 let modeRadios;
 
 async function loadTags() {
-  const { data, error } = await supabase
+  const { data, error } = await mySupabaseClient
     .from('tags')
     .select('*')
     .order('name');
@@ -52,7 +52,7 @@ function renderTagGrid() {
 async function filterVideos() {
   videoResults.innerHTML = '<p>Loading...</p>';
   
-  let query = supabase
+  let query = mySupabaseClient
     .from('videos')
     .select(`
       id, title, url, description, status, created_at,
