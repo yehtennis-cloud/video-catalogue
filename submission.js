@@ -1,5 +1,4 @@
 console.log('submission.js loaded');
-
 let selectedTagIds = new Set();
 
 document.addEventListener('DOMContentLoaded', () => {
